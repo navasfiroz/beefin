@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beefin Burger | Authentic American Smash Burgers</title>
+    <meta name="description" content="Kayamkulam's First Authentic American Smash Burger Joint. 100% Fresh Beef. No Frozen Patties.">
+    
+    <!-- Tailwind CSS (CDN for single-file usage) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Config for Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#FF002E',
+                            dark: '#0a0a0a',
+                            gray: '#1f1f1f',
+                            gold: '#FFD700'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['"Montserrat"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #202020 1px, transparent 1px), linear-gradient(to bottom, #202020 1px, transparent 1px)",
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF002E;
+        }
+
+        /* Text Stroke Effect */
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            color: transparent;
+        }
+        
+        /* Preloader Styles */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white font-body overflow-x-hidden antialiased selection:bg-brand-red selection:text-white">
+
+    <!-- Preloader -->
+    <div id="preloader" class="loader-overlay">
+        <div class="text-center">
+            <!-- Using the logo for the loader -->
+            <img src="beefin-logo.png" alt="Loading" class="w-24 h-auto animate-pulse mx-auto mb-4 filter invert brightness-0 invert">
+            <div class="h-1 w-32 bg-gray-800 rounded-full overflow-hidden relative">
+                <div class="absolute inset-0 bg-brand-red animate-[loading_1.5s_infinite]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 border-b border-white/5 bg-brand-dark/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="#" class="relative group">
+                    <img src="beefin-logo.png" alt="Beefin Burger" class="h-10 md:h-12 filter invert brightness-0 invert transition-transform duration-300 group-hover:scale-105">
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-sm font-bold uppercase tracking-widest hover:text-brand-red transition-colors">Home</a>
+                    <a href="#about" class="text-sm font-bold uppercase tracking-widest hover:text-brand-red transition-colors">Our Story</a>
+                    <a href="#menu" class="text-sm font-bold uppercase tracking-widest hover:text-brand-red transition-colors">Menu</a>
+                    <a href="#reviews" class="text-sm font-bold uppercase tracking-widest hover:text-brand-red transition-colors">Reviews</a>
+                    <a href="#contact" class="text-sm font-bold uppercase tracking-widest hover:text-brand-red transition-colors">Location</a>
+                </div>
+
+                <!-- CTA & Mobile Toggle -->
+                <!-- <div class="flex items-center gap-4">
+                    <a href="https://order.beefinburger.com/" class="hidden md:inline-block bg-brand-red hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full transition-all transform hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,0,46,0.5)] text-sm uppercase tracking-wide">
+                        Order Online
+                    </a>
+                    <button id="menu-btn" class="md:hidden text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-8 h-8"></i>
+                    </button>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="md:hidden fixed inset-0 bg-black/95 z-40 transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center space-y-8">
+            <button id="close-menu" class="absolute top-6 right-6 text-white hover:text-brand-red transition-colors">
+                <i data-lucide="x" class="w-10 h-10"></i>
+            </button>
+            <a href="#home" class="text-3xl font-heading uppercase tracking-wider hover:text-brand-red mobile-link transition-colors">Home</a>
+            <a href="#about" class="text-3xl font-heading uppercase tracking-wider hover:text-brand-red mobile-link transition-colors">Our Story</a>
+            <a href="#menu" class="text-3xl font-heading uppercase tracking-wider hover:text-brand-red mobile-link transition-colors">Menu</a>
+            <a href="#reviews" class="text-3xl font-heading uppercase tracking-wider hover:text-brand-red mobile-link transition-colors">Reviews</a>
+            <a href="https://order.beefinburger.com/" class="bg-brand-red text-white font-heading text-xl py-3 px-8 rounded-full uppercase tracking-wide shadow-lg hover:bg-red-700">Order Now</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Background Grid -->
+        <div class="absolute inset-0 bg-grid-pattern bg-[length:40px_40px] opacity-5 pointer-events-none"></div>
+        
+        <!-- Radial Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-dark/50 to-brand-dark pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col-reverse lg:flex-row items-center gap-12">
+                
+                <!-- Text Content -->
+                <div class="lg:w-1/2 text-center lg:text-left space-y-6" data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-red/30 bg-brand-red/10 text-brand-red text-xs font-bold uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+                        Kayamkulam's Finest
+                    </div>
+                    
+                    <h1 class="text-6xl md:text-8xl font-heading leading-none tracking-tight">
+                        Authentic <br>
+                        <span class="text-brand-red">Smash</span> <span class="text-stroke">Burger</span>
+                    </h1>
+                    
+                    <p class="text-gray-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 font-light leading-relaxed">
+                        No frozen shortcuts. 100% fresh beef smashed to crispy perfection. The real American taste, right here in Kerala.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                        <a href="https://order.beefinburger.com/" class="bg-brand-red text-white font-bold py-4 px-8 rounded-lg uppercase tracking-wider transition-all hover:bg-white hover:text-brand-red hover:shadow-[0_0_30px_rgba(255,0,46,0.4)]">
+                            Order Now
+                        </a>
+                        <a href="#menu" class="border border-white/20 bg-white/5 backdrop-blur text-white font-bold py-4 px-8 rounded-lg uppercase tracking-wider hover:bg-white hover:text-brand-dark transition-all">
+                            View Menu
+                        </a>
+                    </div>
+
+                    <div class="flex items-center justify-center lg:justify-start gap-8 pt-8 opacity-70">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="flame" class="text-brand-red w-5 h-5"></i>
+                            <span class="text-sm font-bold uppercase">Fresh Beef</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="ban" class="text-brand-red w-5 h-5"></i>
+                            <span class="text-sm font-bold uppercase">No Frozen</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="text-brand-red w-5 h-5"></i>
+                            <span class="text-sm font-bold uppercase">Halal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Image -->
+                <div class="lg:w-1/2 relative group" data-aos="fade-left">
+                    <!-- Glow Effect behind burger -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-red/20 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    
+                    <!-- Main Burger Image -->
+                    <img src="signature-burger.png" alt="Signature Smash Burger" class="relative w-full max-w-xl mx-auto transform group-hover:scale-105 transition-transform duration-500 drop-shadow-2xl">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-6 -right-6 md:bottom-10 md:right-10 bg-white text-black rounded-full p-6 md:p-8 animate-bounce-slow shadow-lg rotate-12 z-20">
+                        <div class="text-center">
+                            <span class="block text-3xl md:text-4xl font-heading font-bold text-brand-red">100%</span>
+                            <span class="block text-xs md:text-sm font-bold uppercase tracking-widest">Fresh Beef</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Storefront Section -->
+    <section id="about" class="py-20 bg-brand-gray relative">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <!-- Image Container -->
+                <div class="relative group overflow-hidden rounded-2xl border border-white/10" data-aos="zoom-in">
+                    <div class="absolute inset-0 bg-brand-red/20 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none"></div>
+                    <img src="bb-storefront.png" alt="Beefin Burger Storefront" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110">
+                    <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-20">
+                        <p class="text-brand-gold font-heading text-2xl">Est. Kayamkulam</p>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div class="space-y-6" data-aos="fade-up">
+                    <h2 class="text-brand-red font-bold tracking-widest uppercase text-sm">Our Philosophy</h2>
+                    <h3 class="text-4xl md:text-5xl font-heading leading-tight">Trust is built <br>one burger at a time.</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        While the world races toward ultra-modern fusion cuisines, our vision is simple: to preserve the <strong class="text-white">classic American cheeseburger</strong> in its most authentic style.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        We source 100% fresh beef locally, use organic vegetables, and say absolutely NO to artificial flavor enhancers like MSG. It's not fast food; it's fresh food, cooked fast.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 pt-4">
+                        <div class="border-l-2 border-brand-red pl-4">
+                            <h4 class="text-2xl font-heading text-white">90g</h4>
+                            <p class="text-xs uppercase tracking-wider text-gray-500">Smashed Patty Size</p>
+                        </div>
+                        <div class="border-l-2 border-brand-red pl-4">
+                            <h4 class="text-2xl font-heading text-white">100%</h4>
+                            <p class="text-xs uppercase tracking-wider text-gray-500">Natural Ingredients</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-24 bg-brand-dark relative overflow-hidden">
+        <!-- Decorative Background Text -->
+        <div class="absolute top-10 left-0 w-full text-center overflow-hidden pointer-events-none select-none opacity-5">
+            <span class="text-[15vw] font-heading font-bold text-white leading-none">MENU</span>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-brand-red font-bold tracking-widest uppercase text-sm mb-2">Our Masterpieces</h2>
+                <h3 class="text-5xl font-heading text-white">Crafted for You</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1: Skinny -->
+                <div class="bg-brand-gray border border-white/5 rounded-2xl p-6 group hover:border-brand-red/50 transition-all duration-300 hover:-translate-y-2 flex flex-col" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative h-48 mb-6 flex items-center justify-center">
+                        <img src="skinny-burger.png" alt="Skinny Smash Burger" class="max-h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-2xl font-heading text-white">Skinny Smash</h4>
+                            <span class="text-xs uppercase text-gray-500 font-bold tracking-wider">The Daily Driver</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3 flex-grow">
+                        90 grams of ground beef formed into a crispy, juicy smash patty with melted cheese, served in an aromatic fresh seeded bun.
+                    </p>
+                    <a href="https://order.beefinburger.com/" class="block w-full py-3 rounded border border-white/20 text-center text-sm font-bold uppercase hover:bg-brand-red hover:border-brand-red hover:text-white transition-colors">
+                        Order Now
+                    </a>
+                </div>
+
+                <!-- Card 2: Signature (Featured) -->
+                <div class="bg-gradient-to-b from-brand-gray to-black border border-brand-red rounded-2xl p-6 transform md:-translate-y-4 shadow-[0_0_30px_rgba(255,0,46,0.15)] relative overflow-hidden group flex flex-col" data-aos="fade-up" data-aos-delay="200">
+                    <div class="absolute top-4 right-4 bg-brand-gold text-black text-xs font-bold px-3 py-1 rounded-full uppercase z-10">Must Try</div>
+                    <div class="relative h-56 mb-6 flex items-center justify-center">
+                        <img src="signature-burger.png" alt="Signature Smash Burger" class="max-h-full object-contain mix-blend-lighten group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-3xl font-heading text-brand-red">Signature Smash</h4>
+                            <span class="text-xs uppercase text-gray-400 font-bold tracking-wider">The Ultimate Indulgence</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4 flex-grow">
+                        Fresh beef smash patties layered with melted cheese, topped with caramelized mushrooms and onions for that rich, unforgettable flavor.
+                    </p>
+                    <ul class="text-xs text-gray-500 mb-6 space-y-1">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red"></i> Double Smash Patties</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red"></i> Caramelized Mushroom</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-red"></i> Double Cheese</li>
+                    </ul>
+                    <a href="https://order.beefinburger.com/" class="block w-full py-4 rounded bg-brand-red text-center text-sm font-bold uppercase text-white hover:bg-red-600 transition-colors shadow-lg">
+                        Get The Signature
+                    </a>
+                </div>
+
+                <!-- Card 3: OG -->
+                <div class="bg-brand-gray border border-white/5 rounded-2xl p-6 group hover:border-brand-red/50 transition-all duration-300 hover:-translate-y-2 flex flex-col" data-aos="fade-up" data-aos-delay="300">
+                    <div class="relative h-48 mb-6 flex items-center justify-center">
+                        <img src="beef-burger.png" alt="OG Smash Burger" class="max-h-full object-contain mix-blend-lighten group-hover:scale-110 transition-transform duration-300">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-2xl font-heading text-white">OG Smash</h4>
+                            <span class="text-xs uppercase text-gray-500 font-bold tracking-wider">Classic Choice</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3 flex-grow">
+                        The Original Classic Smash Burger. Less expensive than the premium signature, but more substantial than the skinny. Best of both worlds.
+                    </p>
+                    <a href="https://order.beefinburger.com/" class="block w-full py-3 rounded border border-white/20 text-center text-sm font-bold uppercase hover:bg-brand-red hover:border-brand-red hover:text-white transition-colors">
+                        Order Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-20 bg-brand-gray border-y border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h3 class="text-4xl font-heading text-white mb-2">Burger Talk</h3>
+                <p class="text-gray-400">Don't just take our word for it.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="bg-brand-dark p-8 rounded-xl border border-white/5 relative" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-brand-red/20 text-4xl"></i>
+                    <div class="flex text-brand-gold mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "The juiciest beef smash burger I’ve ever had — you can taste the difference with fresh beef. Beefin Burger makes every bite feel premium."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white">A</div>
+                        <div>
+                            <h5 class="font-bold text-sm text-white">Arjun Menon</h5>
+                            <span class="text-xs text-gray-500">Verified Customer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-brand-dark p-8 rounded-xl border border-brand-red/30 relative transform md:-translate-y-4 shadow-xl" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-brand-red/20 text-4xl"></i>
+                    <div class="flex text-brand-gold mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "Finally, a true beef smash burger joint in Kayamkulam! No shortcuts, no frozen patties — just real flavor done right."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white">R</div>
+                        <div>
+                            <h5 class="font-bold text-sm text-white">Rahul</h5>
+                            <span class="text-xs text-gray-500">Local Guide</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-brand-dark p-8 rounded-xl border border-white/5 relative" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-brand-red/20 text-4xl"></i>
+                    <div class="flex text-brand-gold mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "Honestly feels like dining at an international burger joint. Beefin Burger could stand tall against any global brand."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white">N</div>
+                        <div>
+                            <h5 class="font-bold text-sm text-white">Neha Varghese</h5>
+                            <span class="text-xs text-gray-500">Foodie</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / Footer -->
+    <section id="contact" class="bg-black text-white pt-20 pb-10 border-t border-white/10">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Brand -->
+                <div class="space-y-6">
+                    <img src="beefin-logo.png" alt="Logo" class="h-10 filter invert brightness-0 invert">
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Authentic American Smash Burgers made with passion in Kayamkulam. No frozen cuts, just fresh smashes.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://www.instagram.com/beefin.burger" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-red transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61581468711845" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-red transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://wa.me/917907546658" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-red transition-colors">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-heading text-white mb-6 tracking-wider">Contact Us</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-phone text-brand-red mt-1"></i>
+                            <span>+91 79075 46658</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-location-dot text-brand-red mt-1"></i>
+                            <span>Randamkutty, K.P. Road,<br>Kayamkulam, Alappuzha</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fa-solid fa-envelope text-brand-red mt-1"></i>
+                            <span>hello@beefinburger.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hours -->
+                <div>
+                    <h4 class="text-lg font-heading text-white mb-6 tracking-wider">Opening Hours</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex justify-between border-b border-white/5 pb-2">
+                            <span>Monday - Sunday</span>
+                            <span class="text-white font-bold">12 PM - 11:30 PM</span>
+                        </li>
+                    </ul>
+                    <div class="mt-6">
+                        <a href="https://share.google/kvY9PFfXpNwJMaODf" target="_blank" class="inline-flex items-center gap-2 text-brand-red font-bold text-sm hover:text-white transition-colors">
+                            Get Directions <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="text-lg font-heading text-white mb-6 tracking-wider">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-brand-red transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-brand-red transition-colors">Terms & Conditions</a></li>
+                        <li><a href="#" class="hover:text-brand-red transition-colors">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 text-center text-xs text-gray-600">
+                <p>&copy; 2025 Beefin Burger. All rights reserved.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Main Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Initialize AOS Animation
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500);
+        });
+
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('translate-x-full');
+            // Prevent body scroll when menu is open
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+        // Navbar Scroll Effect (Glassmorphism shift)
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/95', 'shadow-lg', 'py-2');
+                navbar.classList.remove('bg-brand-dark/80', 'py-4');
+            } else {
+                navbar.classList.remove('bg-black/95', 'shadow-lg', 'py-2');
+                navbar.classList.add('bg-brand-dark/80', 'py-4');
+            }
+        });
+    </script>
+</body>
+</html>
