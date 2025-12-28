@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5JKV868D');</script>
+    <!-- End Google Tag Manager -->
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beefin Burger Promo</title>
@@ -77,6 +85,10 @@
     </style>
 </head>
 <body class="p-6 relative overflow-x-hidden">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5JKV868D"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!-- Top: Branding -->
     <header class="w-full flex justify-between items-center mb-6">
@@ -231,6 +243,16 @@
 
                     // Artificial delay for "Scanning" effect
                     setTimeout(() => {
+                        // --- NEW GTM CODE START ---
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'event': 'location_check_complete',
+                            'is_within_15km': d <= MAX_RADIUS_KM ? 'yes' : 'no',
+                            'actual_distance': d.toFixed(2), // Distance with 2 decimals
+                            'coordinates': position.coords.latitude + ',' + position.coords.longitude
+                        });
+                        // --- NEW GTM CODE END ---
+                        
                         hideAll();
                         if (d <= MAX_RADIUS_KM) {
                             stateSuccess.classList.remove('hidden');
