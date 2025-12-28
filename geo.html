@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Location Radius Check</title>
+  <title>Claim Your Voucher</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu;
@@ -18,59 +18,92 @@
       max-width: 420px;
       width: 100%;
       border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 28px;
+      border-radius: 18px;
+      padding: 30px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
     }
     h1 {
       font-size: 22px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      color: #111827;
     }
     p {
       color: #6b7280;
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
+      line-height: 1.5;
     }
     button {
+      width: 100%;
       background: #ffdd00;
       color: #292929;
       border: none;
-      padding: 12px 18px;
+      padding: 14px 18px;
       font-size: 15px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: 600;
     }
-    button:hover {
-      opacity: 0.9;
+    button:hover { opacity: 0.9; }
+
+    .whatsapp-btn {
+      background: #25D366;
+      color: #ffffff;
+      margin-top: 10px;
     }
+
     .result {
-      margin-top: 20px;
+      margin-top: 18px;
       font-size: 15px;
       font-weight: 600;
     }
     .inside { color: #16a34a; }
     .outside { color: #dc2626; }
+
+    .links {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .links a {
+      color: #6b7280;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+    .links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Check Your Availability</h1>
-    <p>We need your location to check if you're within our service area.</p>
+    <h1>Check Voucher Availability</h1>
+    <p>Allow location access to check if this offer is available in your area.</p>
+
     <button id="locBtn" onclick="getLocation()">Allow Location Access</button>
+
+    <button id="waBtn" class="whatsapp-btn" style="display:none" onclick="openWhatsApp()">
+      Claim Voucher on WhatsApp
+    </button>
+
     <div id="result" class="result"></div>
+
+    <div class="links">
+      <a href="tnc.html" target="_blank">Terms & Conditions</a> ·
+      <a href="privacy.html" target="_blank">Privacy Policy</a>
+    </div>
   </div>
 
   <script>
     // ===== CONFIG =====
-    const STORE_LAT = 9.1326103;  // example latitude
-    const STORE_LON = 76.5133728; // example longitude
+    const STORE_LAT = 9.177414683309355;
+    const STORE_LON = 76.52830087116382;
     const MAX_DISTANCE_KM = 10;
 
+    // WhatsApp config
+    const WHATSAPP_NUMBER = '919999999999'; // replace
+    const WHATSAPP_MESSAGE = encodeURIComponent('Hi! I want to claim my voucher.');
+
     function getLocation() {
-      // reset fallback state on every user click
-      fallbackAttempted = false;
       if (!navigator.geolocation) {
         showResult('Geolocation is not supported by your browser.', 'outside');
         return;
@@ -78,14 +111,12 @@
 
       showResult('Checking your location…', '');
 
-      // Single-call strategy for iOS stability
-      // iOS Safari fix: warm up CoreLocation using watchPosition
-      const watchId = navigator.geolocation.watchPosition(
+      navigator.geolocation.watchPosition(
         (pos) => {
-          navigator.geolocation.clearWatch(watchId);
+          navigator.geolocation.clearWatch(this);
           onSuccess(pos);
         },
-        onErrorLowAccuracy,
+        onError,
         { enableHighAccuracy: false, timeout: 30000, maximumAge: 0 }
       );
     }
@@ -96,62 +127,42 @@
       const distance = calculateDistance(userLat, userLon, STORE_LAT, STORE_LON);
 
       if (distance <= MAX_DISTANCE_KM) {
-        showResult(`You're within ${distance.toFixed(2)} km. You're eligible!`, 'inside');
+        showResult(`You're within ${distance.toFixed(2)} km. Offer unlocked!`, 'inside');
+        document.getElementById('waBtn').style.display = 'block';
+        document.getElementById('locBtn').style.display = 'none';
       } else {
-        showResult(`You're ${distance.toFixed(2)} km away. Outside our service area.`, 'outside');
+        showResult(`You're ${distance.toFixed(2)} km away. Offer not available here.`, 'outside');
       }
     }
 
-    let fallbackAttempted = false;
-
-        function onErrorLowAccuracy(error) {
+    function onError(error) {
       if (error.code === error.PERMISSION_DENIED) {
-        showPermissionHelp();
-        return;
+        showResult('Location access is required to unlock this offer.', 'outside');
+      } else {
+        showResult('Unable to fetch location. Please try again.', 'outside');
       }
-
-      let msg = 'Unable to fetch location.';
-      if (error.code === error.POSITION_UNAVAILABLE) msg = 'Location unavailable. Try moving outdoors.';
-      if (error.code === error.TIMEOUT) msg = 'Location request timed out. Please retry.';
-      showResult(msg, 'outside');
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = toRad(lat2 - lat1);
       const dLon = toRad(lon2 - lon1);
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
     }
 
     function toRad(value) {
-      return (value * Math.PI) / 180;
-    }
-
-    function showPermissionHelp() {
-      const el = document.getElementById('result');
-      el.innerHTML = `
-        <div style="color:#dc2626; margin-bottom:10px;">
-          Location access is blocked.
-        </div>
-        <div style="font-size:13px; color:#6b7280; line-height:1.4;">
-          Please enable location manually:<br><br>
-          <b>Desktop (Chrome/Safari):</b><br>
-          Click the 🔒 icon in the address bar → Location → Allow → Reload page<br><br>
-          <b>iPhone (Safari):</b><br>
-          Settings → Safari → Location → Allow / While Using Website → Reload
-        </div>
-      `;
+      return value * Math.PI / 180;
     }
 
     function showResult(message, className) {
       const el = document.getElementById('result');
       el.textContent = message;
       el.className = `result ${className}`;
+    }
+
+    function openWhatsApp() {
+      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
     }
   </script>
 </body>
