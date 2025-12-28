@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5JKV868D');</script>
+    <!-- End Google Tag Manager -->
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beefin Burger Promo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #F8F5F2; /* Cream White */
+            color: #1A1A1A; /* Near Black */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .font-display {
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        /* Floating Burger Animation */
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* The Big Button Animation */
+        .pulse-ring {
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        /* Success Animation */
+        .scale-in { animation: scaleIn 0.3s ease-out forwards; }
+        @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Loader */
+        .dots-loader span {
+            animation: dots 1.4s infinite ease-in-out both;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #DC2626; /* Red */
+            border-radius: 50%;
+        }
+        .dots-loader span:nth-child(1) { animation-delay: -0.32s; }
+        .dots-loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes dots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        img.brand-logo {
+            max-width: 100px;
+        }
+        header {
+            margin-bottom: 5px !important;
+        }
+        .animate-float {
+            margin-bottom: -15px;
+        }
+    </style>
+</head>
+<body class="p-6 relative overflow-x-hidden">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5JKV868D"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Top: Branding -->
+    <header class="w-full flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+            <!-- Brand Logo -->
+            <img src="beefin-logo.png" alt="Beefin Logo" class="brand-logo">
+        </div>
+        <div class="bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Promo Live</div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center w-full max-w-md mx-auto z-10">
+        
+        <!-- Hero Image -->
+        <div class="relative w-full flex justify-center mb-6">
+            <div class="absolute inset-0 bg-orange-500 blur-[80px] opacity-20 rounded-full scale-75 transform translate-y-4"></div>
+            <img src="og.png" alt="OG Smash Burger" class="w-64 h-auto object-contain drop-shadow-2xl animate-float relative z-10">
+        </div>
+
+        <!-- Typography -->
+        <div class="text-center mb-8">
+            <p class="text-red-600 font-bold text-xs tracking-[0.2em] uppercase mb-2">New Year Special</p>
+            <h1 class="font-display text-5xl text-gray-900 leading-[0.9] mb-3">SMASH BURGER
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">@ ₹1</span>
+            </h1>
+            <p class="text-gray-500 text-m font-medium leading-relaxed max-w-[260px] mx-auto">
+                20 Winners. Every Saturday.
+            </p>
+        </div>
+
+        <!-- THE INTERFACE -->
+        <div id="interface-container" class="w-full mb-8">
+            
+            <!-- STATE 1: IDLE -->
+            <button id="btn-check" onclick="checkLocation()" class="group w-full h-20 bg-gray-900 text-white rounded-2xl font-bold text-lg uppercase tracking-wider flex items-center justify-between px-8 shadow-2xl shadow-gray-400/50 transition-all active:scale-95 hover:bg-black">
+                <span>Check Eligibility</span>
+                <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                    <i class="fas fa-arrow-right text-sm"></i>
+                </div>
+            </button>
+
+            <!-- STATE 2: LOADING -->
+            <div id="state-loading" class="hidden w-full h-20 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
+                <div class="dots-loader"><span></span><span></span><span></span></div>
+            </div>
+
+            <!-- STATE 3: SUCCESS -->
+            <a id="state-success" href="https://wa.me/message/QACMLA6ASVRID1" 
+               target="_blank"
+               class="hidden pulse-ring w-full h-20 bg-[#25D366] text-white rounded-2xl font-bold text-lg uppercase tracking-wider flex items-center justify-between px-8 shadow-xl shadow-green-200 scale-in">
+                <span>Claim on WhatsApp</span>
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
+
+            <!-- STATE 4: FAIL -->
+            <div id="state-fail" class="hidden flex-col scale-in w-full">
+                <div class="w-full p-4 bg-red-50 border border-red-100 rounded-2xl flex flex-col items-center justify-center text-center mb-3">
+                    <span class="text-red-600 font-bold text-lg mb-1">Too Far Away</span>
+                    <span class="text-gray-500 text-xs">You are <span id="dist-val" class="font-mono text-red-500">0</span>km away. The limit is 15km.</span>
+                </div>
+                <button onclick="resetUI()" class="text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-900 transition-colors">Try Again</button>
+            </div>
+            
+             <!-- STATE 5: ERROR -->
+             <div id="state-error" class="hidden flex-col items-center justify-center scale-in w-full">
+                <div class="w-full h-20 bg-gray-100 text-gray-600 border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-sm px-6 font-medium gap-2 mb-3">
+                    <i class="fas fa-map-marker-slash"></i>
+                    Location Access Needed
+                </div>
+                <button onclick="checkLocation()" class="text-gray-900 text-xs font-bold underline">Retry Permission</button>
+            </div>
+        </div>
+
+        <!-- Rules Section (Always Visible) -->
+        <div class="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-m text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-gray-300"></i>
+                Campaign Rules
+            </h3>
+            <ul class="space-y-3">
+                <li class="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">01</span>
+                    <span>Valid every Saturday until <strong>Jan 31, 2026</strong>.</span>
+                </li>
+                <li class="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">02</span>
+                    <span><strong>20 Winners</strong> selected randomly every week.</span>
+                </li>
+                <li class="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">03</span>
+                    <span>Must be within <strong>15km radius</strong> of Kayamkulam outlet.</span>
+                </li>
+                <li class="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">04</span>
+                    <span>One ticket gets you entry into <strong>all future draws</strong>.</span>
+                </li>
+            </ul>
+        </div>
+
+    </main>
+
+    <footer class="mt-8 text-center">
+        <p class="text-[12px] text-gray-300 font-medium">Beefin Burger &copy; 2025</p>
+        <a class="text-[12px] text-gray-300 font-medium" href="https://beefinburger.com/policy.html">Privacy Policy</a>
+        <a class="text-[12px] text-gray-300 font-medium" href="https://beefinburger.com/terms.html">Terms n Conditions</a>
+    </footer>
+
+    <script>
+        // CONFIG
+        const TARGET_LAT = 9.17715;
+        const TARGET_LON = 76.52829;
+        const MAX_RADIUS_KM = 15;
+
+        // UI Elements
+        const btnCheck = document.getElementById('btn-check');
+        const stateLoading = document.getElementById('state-loading');
+        const stateSuccess = document.getElementById('state-success');
+        const stateFail = document.getElementById('state-fail');
+        const stateError = document.getElementById('state-error');
+        const distVal = document.getElementById('dist-val');
+
+        function hideAll() {
+            btnCheck.classList.add('hidden');
+            stateLoading.classList.add('hidden');
+            stateSuccess.classList.add('hidden');
+            stateFail.classList.add('hidden');
+            stateError.classList.add('hidden');
+        }
+
+        function resetUI() {
+            hideAll();
+            btnCheck.classList.remove('hidden');
+        }
+
+        function checkLocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation not supported");
+                return;
+            }
+        
+            hideAll();
+            stateLoading.classList.remove('hidden');
+        
+            // Define success handler separately so we can reuse it
+            const handleSuccess = (position) => {
+                const d = calculateDistance(
+                    position.coords.latitude,
+                    position.coords.longitude,
+                    TARGET_LAT,
+                    TARGET_LON
+                );
+        
+                setTimeout(() => {
+                    // --- GTM CODE ---
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'location_check_complete',
+                        'is_within_15km': d <= MAX_RADIUS_KM ? 'yes' : 'no',
+                        'actual_distance': d.toFixed(2),
+                        'coordinates': position.coords.latitude + ',' + position.coords.longitude
+                    });
+                    // ----------------
+        
+                    hideAll();
+                    if (d <= MAX_RADIUS_KM) {
+                        stateSuccess.classList.remove('hidden');
+                    } else {
+                        distVal.innerText = d.toFixed(1);
+                        stateFail.classList.remove('hidden');
+                    }
+                }, 1200);
+            };
+        
+            // Define error handler
+            const handleError = (err) => {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+                
+                // If High Accuracy fails (Timeout or Unavailable), try Low Accuracy
+                if (err.code === 3 || err.code === 2) { 
+                    console.log("Falling back to low accuracy...");
+                    navigator.geolocation.getCurrentPosition(
+                        handleSuccess, 
+                        (finalErr) => {
+                            console.error("Final Location Error:", finalErr);
+                            hideAll();
+                            stateError.classList.remove('hidden');
+                        },
+                        { enableHighAccuracy: false, timeout: 10000 } // Low accuracy options
+                    );
+                } else {
+                    // Permission denied (Code 1) or other fatal errors
+                    hideAll();
+                    stateError.classList.remove('hidden');
+                }
+            };
+        
+            // 1. Try High Accuracy First
+            navigator.geolocation.getCurrentPosition(
+                handleSuccess,
+                handleError,
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } 
+            );
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        }
+    </script>
+</body>
+</html>
