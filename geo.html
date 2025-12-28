@@ -58,17 +58,19 @@
   <div class="card">
     <h1>Check Your Availability</h1>
     <p>We need your location to check if you're within our service area.</p>
-    <button onclick="getLocation()">Allow Location Access</button>
+    <button id="locBtn" onclick="getLocation()">Allow Location Access</button>
     <div id="result" class="result"></div>
   </div>
 
   <script>
     // ===== CONFIG =====
-    const STORE_LAT = 9.177329951312874;  // example latitude
-    const STORE_LON = 76.52826868465529; // example longitude
+    const STORE_LAT = 9.1326103;  // example latitude
+    const STORE_LON = 76.5133728; // example longitude
     const MAX_DISTANCE_KM = 10;
 
     function getLocation() {
+      // reset fallback state on every user click
+      fallbackAttempted = false;
       if (!navigator.geolocation) {
         showResult('Geolocation is not supported by your browser.', 'outside');
         return;
@@ -76,11 +78,15 @@
 
       showResult('Checking your location…', '');
 
-      // First attempt: high accuracy (GPS)
-      navigator.geolocation.getCurrentPosition(
-        onSuccess,
-        onErrorHighAccuracy,
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      // Single-call strategy for iOS stability
+      // iOS Safari fix: warm up CoreLocation using watchPosition
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          navigator.geolocation.clearWatch(watchId);
+          onSuccess(pos);
+        },
+        onErrorLowAccuracy,
+        { enableHighAccuracy: false, timeout: 30000, maximumAge: 0 }
       );
     }
 
@@ -98,21 +104,13 @@
 
     let fallbackAttempted = false;
 
-    function onErrorHighAccuracy(error) {
-      // iOS often throws POSITION_UNAVAILABLE / kCLErrorLocationUnknown here
-      if (fallbackAttempted) return;
-      fallbackAttempted = true;
+        function onErrorLowAccuracy(error) {
+      if (error.code === error.PERMISSION_DENIED) {
+        showPermissionHelp();
+        return;
+      }
 
-      setTimeout(() => {
-        navigator.geolocation.getCurrentPosition(
-          onSuccess,
-          onErrorLowAccuracy,
-          { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
-        );
-      }, 1200);
-    }
-
-    function onErrorLowAccuracy(error) {
+      let msg = 'Unable to fetch location.';(error) {
       let msg = 'Unable to fetch location.';
       if (error.code === error.PERMISSION_DENIED) msg = 'You denied location access.';
       if (error.code === error.POSITION_UNAVAILABLE) msg = 'Location unavailable. Try moving outdoors.';
@@ -136,7 +134,24 @@
       return (value * Math.PI) / 180;
     }
 
+    function showPermissionHelp() {
+      const el = document.getElementById('result');
+      el.innerHTML = `
+        <div style="color:#dc2626; margin-bottom:10px;">
+          Location access is blocked.
+        </div>
+        <div style="font-size:13px; color:#6b7280; line-height:1.4;">
+          Please enable location manually:<br><br>
+          <b>Desktop (Chrome/Safari):</b><br>
+          Click the 🔒 icon in the address bar → Location → Allow → Reload page<br><br>
+          <b>iPhone (Safari):</b><br>
+          Settings → Safari → Location → Allow / While Using Website → Reload
+        </div>
+      `;
+    }
+
     function showResult(message, className) {
+      const el = document.getElementById('result');(message, className) {
       const el = document.getElementById('result');
       el.textContent = message;
       el.className = `result ${className}`;
