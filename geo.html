@@ -1,169 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Claim Your Voucher</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .card {
-      max-width: 420px;
-      width: 100%;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
-    }
-    h1 {
-      font-size: 22px;
-      margin-bottom: 10px;
-      color: #111827;
-    }
-    p {
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 22px;
-      line-height: 1.5;
-    }
-    button {
-      width: 100%;
-      background: #ffdd00;
-      color: #292929;
-      border: none;
-      padding: 14px 18px;
-      font-size: 15px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button:hover { opacity: 0.9; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beefin Burger Promo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #F8F5F2; /* Cream White */
+            color: #1A1A1A; /* Near Black */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .font-display {
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        /* Floating Burger Animation */
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
 
-    .whatsapp-btn {
-      background: #25D366;
-      color: #ffffff;
-      margin-top: 10px;
-    }
+        /* The Big Button Animation */
+        .pulse-ring {
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
 
-    .result {
-      margin-top: 18px;
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .inside { color: #16a34a; }
-    .outside { color: #dc2626; }
+        /* Success Animation */
+        .scale-in { animation: scaleIn 0.3s ease-out forwards; }
+        @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    .links {
-      margin-top: 22px;
-      font-size: 12px;
-      color: #9ca3af;
-    }
-    .links a {
-      color: #6b7280;
-      text-decoration: none;
-      margin: 0 6px;
-    }
-    .links a:hover { text-decoration: underline; }
-  </style>
+        /* Loader */
+        .dots-loader span {
+            animation: dots 1.4s infinite ease-in-out both;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #DC2626; /* Red */
+            border-radius: 50%;
+        }
+        .dots-loader span:nth-child(1) { animation-delay: -0.32s; }
+        .dots-loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes dots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
 </head>
-<body>
-  <div class="card">
-    <h1>Check Voucher Availability</h1>
-    <p>Allow location access to check if this offer is available in your area.</p>
+<body class="p-6 relative overflow-x-hidden">
 
-    <button id="locBtn" onclick="getLocation()">Allow Location Access</button>
+    <!-- Top: Branding -->
+    <header class="w-full flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+            <!-- Brand Logo -->
+            <img src="beefin-logo.png" alt="Beefin Logo" class="w-12 h-12 rounded-full object-cover shadow-md">
+            <p class="text-xs font-bold tracking-widest uppercase text-gray-900 hidden sm:block">Beefin.</p>
+        </div>
+        <div class="bg-black text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Promo Live</div>
+    </header>
 
-    <button id="waBtn" class="whatsapp-btn" style="display:none" onclick="openWhatsApp()">
-      Claim Voucher on WhatsApp
-    </button>
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center w-full max-w-md mx-auto z-10">
+        
+        <!-- Hero Image -->
+        <div class="relative w-full flex justify-center mb-6">
+            <div class="absolute inset-0 bg-orange-500 blur-[80px] opacity-20 rounded-full scale-75 transform translate-y-4"></div>
+            <img src="og.avif" alt="OG Smash Burger" class="w-64 h-auto object-contain drop-shadow-2xl animate-float relative z-10">
+        </div>
 
-    <div id="result" class="result"></div>
+        <!-- Typography -->
+        <div class="text-center mb-8">
+            <p class="text-red-600 font-bold text-xs tracking-[0.2em] uppercase mb-2">New Year Special</p>
+            <h1 class="font-display text-5xl text-gray-900 leading-[0.9] mb-3">
+                OG SMASH<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">@ ₹1 ONLY</span>
+            </h1>
+            <p class="text-gray-500 text-sm font-medium leading-relaxed max-w-[260px] mx-auto">
+                20 Winners. Every Saturday. <br>
+                One entry valid for the whole year.
+            </p>
+        </div>
 
-    <div class="links">
-      <a href="tnc.html" target="_blank">Terms & Conditions</a> ·
-      <a href="privacy.html" target="_blank">Privacy Policy</a>
-    </div>
-  </div>
+        <!-- THE INTERFACE -->
+        <div id="interface-container" class="w-full mb-8">
+            
+            <!-- STATE 1: IDLE -->
+            <button id="btn-check" onclick="checkLocation()" class="group w-full h-20 bg-gray-900 text-white rounded-2xl font-bold text-lg uppercase tracking-wider flex items-center justify-between px-8 shadow-2xl shadow-gray-400/50 transition-all active:scale-95 hover:bg-black">
+                <span>Check Eligibility</span>
+                <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                    <i class="fas fa-arrow-right text-sm"></i>
+                </div>
+            </button>
 
-  <script>
-    // ===== CONFIG =====
-    const STORE_LAT = 9.177414683309355;
-    const STORE_LON = 76.52830087116382;
-    const MAX_DISTANCE_KM = 15;
+            <!-- STATE 2: LOADING -->
+            <div id="state-loading" class="hidden w-full h-20 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-gray-200">
+                <div class="dots-loader"><span></span><span></span><span></span></div>
+            </div>
 
-    // WhatsApp config
-    const WHATSAPP_NUMBER = '919999999999'; // replace
-    const WHATSAPP_MESSAGE = encodeURIComponent('Hi! I want to claim my voucher.');
+            <!-- STATE 3: SUCCESS -->
+            <a id="state-success" href="https://wa.me/919072979201?text=Hi%20Beefin%20Burger!%20I'm%20within%2015km%20of%20the%20Kayamkulam%20outlet%20and%20I'd%20like%20to%20enter%20the%20New%20Year%20Promo!%20%F0%9F%8D%94" 
+               target="_blank"
+               class="hidden pulse-ring w-full h-20 bg-[#25D366] text-white rounded-2xl font-bold text-lg uppercase tracking-wider flex items-center justify-between px-8 shadow-xl shadow-green-200 scale-in">
+                <span>Claim on WhatsApp</span>
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
 
-    function getLocation() {
-      if (!navigator.geolocation) {
-        showResult('Geolocation is not supported by your browser.', 'outside');
-        return;
-      }
+            <!-- STATE 4: FAIL -->
+            <div id="state-fail" class="hidden flex-col scale-in w-full">
+                <div class="w-full p-4 bg-red-50 border border-red-100 rounded-2xl flex flex-col items-center justify-center text-center mb-3">
+                    <span class="text-red-600 font-bold text-lg mb-1">Too Far Away</span>
+                    <span class="text-gray-500 text-xs">You are <span id="dist-val" class="font-mono text-red-500">0</span>km away. limit is 15km.</span>
+                </div>
+                <button onclick="resetUI()" class="text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-gray-900 transition-colors">Try Again</button>
+            </div>
+            
+             <!-- STATE 5: ERROR -->
+             <div id="state-error" class="hidden flex-col items-center justify-center scale-in w-full">
+                <div class="w-full h-20 bg-gray-100 text-gray-600 border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-sm px-6 font-medium gap-2 mb-3">
+                    <i class="fas fa-map-marker-slash"></i>
+                    Location Access Needed
+                </div>
+                <button onclick="checkLocation()" class="text-gray-900 text-xs font-bold underline">Retry Permission</button>
+            </div>
+        </div>
 
-      showResult('Checking your location…', '');
+        <!-- Rules Section (Always Visible) -->
+        <div class="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-sm text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-gray-300"></i>
+                Campaign Rules
+            </h3>
+            <ul class="space-y-3">
+                <li class="flex gap-3 text-xs text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">01</span>
+                    <span>Valid every Saturday until <strong>Jan 31, 2026</strong>.</span>
+                </li>
+                <li class="flex gap-3 text-xs text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">02</span>
+                    <span><strong>20 Winners</strong> selected randomly every week.</span>
+                </li>
+                <li class="flex gap-3 text-xs text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">03</span>
+                    <span>Must be within <strong>15km radius</strong> of Kayamkulam outlet.</span>
+                </li>
+                <li class="flex gap-3 text-xs text-gray-600 leading-relaxed">
+                    <span class="font-bold text-red-500 shrink-0">04</span>
+                    <span>One ticket gets you entry into <strong>all future draws</strong>.</span>
+                </li>
+            </ul>
+        </div>
 
-      navigator.geolocation.watchPosition(
-        (pos) => {
-          navigator.geolocation.clearWatch(this);
-          onSuccess(pos);
-        },
-        onError,
-        { enableHighAccuracy: false, timeout: 30000, maximumAge: 0 }
-      );
-    }
+    </main>
 
-    function onSuccess(position) {
-      const userLat = position.coords.latitude;
-      const userLon = position.coords.longitude;
-      const distance = calculateDistance(userLat, userLon, STORE_LAT, STORE_LON);
+    <footer class="mt-8 text-center">
+        <p class="text-[10px] text-gray-300 font-medium">Beefin Burger &copy; 2025</p>
+    </footer>
 
-      if (distance <= MAX_DISTANCE_KM) {
-        showResult(`You're within ${distance.toFixed(2)} km. Offer unlocked!`, 'inside');
-        document.getElementById('waBtn').style.display = 'block';
-        document.getElementById('locBtn').style.display = 'none';
-      } else {
-        showResult(`You're ${distance.toFixed(2)} km away. Offer not available here.`, 'outside');
-      }
-    }
+    <script>
+        // CONFIG
+        const TARGET_LAT = 9.1760;
+        const TARGET_LON = 76.5015;
+        const MAX_RADIUS_KM = 15;
 
-    function onError(error) {
-      if (error.code === error.PERMISSION_DENIED) {
-        showResult('Location access is required to unlock this offer.', 'outside');
-      } else {
-        showResult('Unable to fetch location. Please try again.', 'outside');
-      }
-    }
+        // UI Elements
+        const btnCheck = document.getElementById('btn-check');
+        const stateLoading = document.getElementById('state-loading');
+        const stateSuccess = document.getElementById('state-success');
+        const stateFail = document.getElementById('state-fail');
+        const stateError = document.getElementById('state-error');
+        const distVal = document.getElementById('dist-val');
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-    }
+        function hideAll() {
+            btnCheck.classList.add('hidden');
+            stateLoading.classList.add('hidden');
+            stateSuccess.classList.add('hidden');
+            stateFail.classList.add('hidden');
+            stateError.classList.add('hidden');
+        }
 
-    function toRad(value) {
-      return value * Math.PI / 180;
-    }
+        function resetUI() {
+            hideAll();
+            btnCheck.classList.remove('hidden');
+        }
 
-    function showResult(message, className) {
-      const el = document.getElementById('result');
-      el.textContent = message;
-      el.className = `result ${className}`;
-    }
+        function checkLocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation not supported");
+                return;
+            }
 
-    function openWhatsApp() {
-      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
-    }
-  </script>
+            hideAll();
+            stateLoading.classList.remove('hidden');
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const d = calculateDistance(
+                        position.coords.latitude,
+                        position.coords.longitude,
+                        TARGET_LAT,
+                        TARGET_LON
+                    );
+
+                    // Artificial delay for "Scanning" effect
+                    setTimeout(() => {
+                        hideAll();
+                        if (d <= MAX_RADIUS_KM) {
+                            stateSuccess.classList.remove('hidden');
+                        } else {
+                            distVal.innerText = d.toFixed(1);
+                            stateFail.classList.remove('hidden');
+                        }
+                    }, 1200);
+                },
+                (err) => {
+                    console.error(err);
+                    hideAll();
+                    stateError.classList.remove('hidden');
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        }
+    </script>
 </body>
 </html>
