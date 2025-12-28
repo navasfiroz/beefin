@@ -64,13 +64,11 @@
 
   <script>
     // ===== CONFIG =====
-    const STORE_LAT = 9.177382908813037;  // example latitude
-    const STORE_LON = 76.52826868465529; // example longitude
+    const STORE_LAT = 9.1326103;  // example latitude
+    const STORE_LON = 76.5133728; // example longitude
     const MAX_DISTANCE_KM = 10;
 
     function getLocation() {
-      // reset fallback state on every user click
-      fallbackAttempted = false;
       if (!navigator.geolocation) {
         showResult('Geolocation is not supported by your browser.', 'outside');
         return;
@@ -78,11 +76,11 @@
 
       showResult('Checking your location…', '');
 
-      // Single-call strategy for iOS stability
+      // First attempt: high accuracy (GPS)
       navigator.geolocation.getCurrentPosition(
         onSuccess,
-        onErrorLowAccuracy,
-        { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
+        onErrorHighAccuracy,
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     }
 
@@ -100,7 +98,21 @@
 
     let fallbackAttempted = false;
 
-        function onErrorLowAccuracy(error) {
+    function onErrorHighAccuracy(error) {
+      // iOS often throws POSITION_UNAVAILABLE / kCLErrorLocationUnknown here
+      if (fallbackAttempted) return;
+      fallbackAttempted = true;
+
+      setTimeout(() => {
+        navigator.geolocation.getCurrentPosition(
+          onSuccess,
+          onErrorLowAccuracy,
+          { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
+        );
+      }, 1200);
+    }
+
+    function onErrorLowAccuracy(error) {
       let msg = 'Unable to fetch location.';
       if (error.code === error.PERMISSION_DENIED) msg = 'You denied location access.';
       if (error.code === error.POSITION_UNAVAILABLE) msg = 'Location unavailable. Try moving outdoors.';
