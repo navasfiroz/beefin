@@ -228,46 +228,68 @@
                 alert("Geolocation not supported");
                 return;
             }
-
+        
             hideAll();
             stateLoading.classList.remove('hidden');
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const d = calculateDistance(
-                        position.coords.latitude,
-                        position.coords.longitude,
-                        TARGET_LAT,
-                        TARGET_LON
+        
+            // Define success handler separately so we can reuse it
+            const handleSuccess = (position) => {
+                const d = calculateDistance(
+                    position.coords.latitude,
+                    position.coords.longitude,
+                    TARGET_LAT,
+                    TARGET_LON
+                );
+        
+                setTimeout(() => {
+                    // --- GTM CODE ---
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'location_check_complete',
+                        'is_within_15km': d <= MAX_RADIUS_KM ? 'yes' : 'no',
+                        'actual_distance': d.toFixed(2),
+                        'coordinates': position.coords.latitude + ',' + position.coords.longitude
+                    });
+                    // ----------------
+        
+                    hideAll();
+                    if (d <= MAX_RADIUS_KM) {
+                        stateSuccess.classList.remove('hidden');
+                    } else {
+                        distVal.innerText = d.toFixed(1);
+                        stateFail.classList.remove('hidden');
+                    }
+                }, 1200);
+            };
+        
+            // Define error handler
+            const handleError = (err) => {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+                
+                // If High Accuracy fails (Timeout or Unavailable), try Low Accuracy
+                if (err.code === 3 || err.code === 2) { 
+                    console.log("Falling back to low accuracy...");
+                    navigator.geolocation.getCurrentPosition(
+                        handleSuccess, 
+                        (finalErr) => {
+                            console.error("Final Location Error:", finalErr);
+                            hideAll();
+                            stateError.classList.remove('hidden');
+                        },
+                        { enableHighAccuracy: false, timeout: 10000 } // Low accuracy options
                     );
-
-                    // Artificial delay for "Scanning" effect
-                    setTimeout(() => {
-                        // --- NEW GTM CODE START ---
-                        window.dataLayer = window.dataLayer || [];
-                        window.dataLayer.push({
-                            'event': 'location_check_complete',
-                            'is_within_15km': d <= MAX_RADIUS_KM ? 'yes' : 'no',
-                            'actual_distance': d.toFixed(2), // Distance with 2 decimals
-                            'coordinates': position.coords.latitude + ',' + position.coords.longitude
-                        });
-                        // --- NEW GTM CODE END ---
-                        
-                        hideAll();
-                        if (d <= MAX_RADIUS_KM) {
-                            stateSuccess.classList.remove('hidden');
-                        } else {
-                            distVal.innerText = d.toFixed(1);
-                            stateFail.classList.remove('hidden');
-                        }
-                    }, 1200);
-                },
-                (err) => {
-                    console.error(err);
+                } else {
+                    // Permission denied (Code 1) or other fatal errors
                     hideAll();
                     stateError.classList.remove('hidden');
-                },
-                { enableHighAccuracy: true, timeout: 10000 }
+                }
+            };
+        
+            // 1. Try High Accuracy First
+            navigator.geolocation.getCurrentPosition(
+                handleSuccess,
+                handleError,
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } 
             );
         }
 
