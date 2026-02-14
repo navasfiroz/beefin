@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beefin Burger | Premium</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES & THEME --- */
+        :root {
+            --bg-body: #050505;
+            --bg-gradient: radial-gradient(circle at top left, #1a1a1a, #050505);
+            
+            /* Glassmorphism Card Backgrounds */
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --border-card: rgba(255, 255, 255, 0.06);
+            --bg-modal: #0a0a0a;
+
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #ff0016 0%, #ff2445 100%);
+            --accent: #FF4757;
+            
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            
+            --radius-xl: 28px;
+            --radius-md: 16px;
+            --radius-sm: 10px;
+            
+            --anim-entry: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: var(--bg-body);
+            background-image: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            margin: 0; padding: 0;
+            padding-bottom: 50px;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 24px 24px 10px 24px;
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .brand { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .brand span { 
+            background: var(--brand-gradient); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+
+        /* --- CATEGORIES --- */
+        .categories-wrapper {
+            display: flex; gap: 12px;
+            overflow-x: auto;
+            padding: 10px 24px 20px 24px;
+            scrollbar-width: none;
+        }
+        .categories-wrapper::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-card);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem; font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cat-btn.active {
+            background: var(--brand-gradient);
+            color: white;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 20px rgb(255 69 69 / 30%);
+            font-weight: 100;
+        }
+
+        /* --- LIST VIEW --- */
+        .menu-list {
+            padding: 0 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            max-width: 600px; margin: 0 auto;
+        }
+
+        .menu-item {
+            display: flex; align-items: stretch;
+            justify-content: space-between;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-card);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
+            overflow: hidden;
+            
+            /* Entry Animation */
+            opacity: 0; transform: translateY(15px);
+            animation: fadeUp var(--anim-entry) forwards;
+        }
+        .menu-item:active { transform: scale(0.97); background: rgba(255,255,255,0.06); }
+
+        /* Left Side */
+        .item-content {
+            display: flex; align-items: center;
+            flex: 1; min-width: 0;
+            padding-right: 12px;
+        }
+
+        .thumb {
+            width: 72px; height: 72px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            flex-shrink: 0;
+            margin-right: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background: #222;
+        }
+
+        .text-group {
+            display: flex; flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-size: 1.05rem; font-weight: 700;
+            color: #fff; line-height: 1.3;
+            margin-bottom: 4px;
+        }
+        
+        .item-desc {
+            font-size: 0.8rem; color: #777;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Price Pill */
+        .price-tag {
+            align-self: center;
+            flex-shrink: 0;
+            background: rgb(109 255 0 / 5%);
+            color: #60d200;
+            font-weight: 100;
+            font-size: 0.95rem;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgb(112 255 0 / 21%);
+            min-width: 70px;
+            text-align: center;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+            display: flex; align-items: flex-end; justify-content: center;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal-sheet {
+            background: var(--bg-modal);
+            width: 100%; max-width: 600px; height: 92vh;
+            border-radius: 30px 30px 0 0;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            box-shadow: 0 -20px 50px rgba(0,0,0,0.8);
+        }
+        .modal-overlay.active .modal-sheet { transform: translateY(0); }
+
+        /* Modal Content */
+        .hero-container {
+            position: relative;
+            height: 350px; width: 100%;
+        }
+        
+        .hero-img {
+            width: 100%; height: 100%; object-fit: cover;
+            /* Subtly darken the image so text pops */
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+
+        .close-fab {
+            position: absolute; top: 24px; right: 24px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10;
+        }
+
+        .sheet-body { padding: 0 28px 40px 28px; position: relative; top: -40px; }
+
+        .badge-spicy {
+            display: inline-block;
+            background: var(--brand-gradient);
+            padding: 6px 12px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .sheet-title { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 8px; }
+        .sheet-price { 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            color: #3be800; 
+            display: block; margin-bottom: 20px; 
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .sheet-desc { color: #999; line-height: 1.6; font-size: 1rem; margin-bottom: 30px; }
+
+        .section-head {
+            font-size: 0.85rem; text-transform: uppercase;
+            letter-spacing: 1.5px; color: #555; font-weight: 700;
+            margin-bottom: 15px; display: block;
+        }
+
+        /* Nutrition Row */
+        .nutri-row {
+            display: flex; gap: 15px; margin-bottom: 35px;
+        }
+        .nutri-box {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-card);
+            padding: 15px; border-radius: 16px;
+            text-align: center;
+        }
+        .n-val { display: block; font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .n-lbl { font-size: 0.75rem; color: #666; font-weight: 500; }
+
+        /* Ingredients Chips */
+        .chips-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        .chip {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-card);
+            padding: 10px 16px; border-radius: 100px;
+            font-size: 0.9rem; color: #ddd;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .chip-check { color: #3be800; font-weight: bold; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">Beefin <span>Burger</span></div>
+    </header>
+
+    <div class="categories-wrapper" id="catContainer"></div>
+    <div class="menu-list" id="menuList"></div>
+
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-sheet">
+            <div class="hero-container">
+                <div class="close-fab" onclick="closeModal()">✕</div>
+                <img src="" class="hero-img" id="mImg">
+            </div>
+            
+            <div class="sheet-body">
+                <div id="mTag" style="display:none"></div>
+                <h2 class="sheet-title" id="mTitle"></h2>
+                <span class="sheet-price" id="mPrice"></span>
+                <p class="sheet-desc" id="mDesc"></p>
+
+                <span class="section-head">Nutrition</span>
+                <div class="nutri-row">
+                    <div class="nutri-box"><span class="n-val" id="nCal"></span><span class="n-lbl">Kcal</span></div>
+                    <div class="nutri-box"><span class="n-val" id="nPro"></span><span class="n-lbl">Protein</span></div>
+                    <div class="nutri-box"><span class="n-val" id="nFat"></span><span class="n-lbl">Fat</span></div>
+                </div>
+
+                <span class="section-head">Inside The Box</span>
+                <div class="chips-container" id="ingList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const menuData = [
+            { id: 1, category: 'Beef Burgers', name: 'Skinny Smash Burger', price: '₹179', desc: '~90 grams of freshly ground beef, smashed thin on a hot grill, topped with a slice of cheese, our house sauce, and served in a toasted bun', img: 'skinny.avif', calories: '~700', protein: '~33 g', fat: '~42 g', ingredients: ['Smash Patty', 'Cheddar', 'Fried Egg', 'Caramelized Onion'] },
+            { id: 2, category: 'Beef Burgers', name: 'Single Smash Burger', price: '₹289', desc: 'Double beef patty, caramelised onion, double cheddar.', img: 'single.avif', calories: '620', protein: '35g', fat: '28g', ingredients: ['Double Smash Patty', 'Double Cheddar', 'Caramelized Onion', 'House Sauce'] },
+            { id: 3, category: 'Beef Burgers', name: 'OG Smash Burger', price: '₹320', desc: 'Double beef patty, caramelised onion, cheddar, fried egg.', img: 'og.avif', calories: '700', protein: '40g', fat: '32g', ingredients: ['Double Patty', 'Fried Egg', 'Cheddar', 'Onion'] },
+            { id: 4, category: 'Beef Burgers', name: 'Double Smash Burger', price: '₹333', desc: 'Double beef patty, onion, cheddar, fried egg, jalapeno.', tag: 'Spicy', img: 'double.avif', calories: '710', protein: '40g', fat: '33g', ingredients: ['Double Patty', 'Jalapenos', 'Spicy Sauce', 'Fried Egg'] },
+            { id: 5, category: 'Beef Burgers', name: 'Hellfire Smash Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'hellfire.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 6, category: 'Beef Burgers', name: 'Signature Smash Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'signature.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 7, category: 'Beef Burgers', name: 'Triple Smash Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'triple.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 8, category: 'Chicken Burgers', name: 'Classic Zinger Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'classic-zinger.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 9, category: 'Chicken Burgers', name: 'Spicy Zinger Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'spicy-zinger.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 10, category: 'Chicken Burgers', name: 'Cheesy Zinger Burger', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'cheesy-zinger.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 10, category: 'Loaded Fries', name: 'Dynamite Loaded Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'dynamite-loaded.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 11, category: 'Loaded Fries', name: 'Marinara Loaded Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'pasta-loaded.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 12, category: 'Loaded Fries', name: 'BBQ Loaded Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'bbq-loaded.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 13, category: 'Loaded Fries', name: 'Cheesy Loaded Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'cheesy-loaded.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 14, category: 'Chicken Tenders', name: 'Peri Peri Tenders', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'periperi-tender.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 15, category: 'Chicken Tenders', name: 'Green Chilli Tenders', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'chilli-tender.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 16, category: 'Chicken Tenders', name: 'BBQ Tenders', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'bbq-tender.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 17, category: 'Chicken Tenders', name: 'Dynamite Tenders', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'dynamite-tender.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 18, category: 'Mini Chicken Bomb', name: 'Peri Peri Bomb', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'periperi-bomb.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 19, category: 'Mini Chicken Bomb', name: 'Green Chilli Bomb', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'chilli-bomb.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 20, category: 'Mini Chicken Bomb', name: 'BBQ Bomb', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'bbq-bomb.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 21, category: 'Mini Chicken Bomb', name: 'Dynamite Bomb', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'dynamite-bomb.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 23, category: 'Fries N Sides', name: 'Jalapeno Cheese Pops', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'pops.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 24, category: 'Fries N Sides', name: 'Classic Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'classic-fries.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 25, category: 'Fries N Sides', name: 'Peri Peri Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'periperi-fries.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 26, category: 'Fries N Sides', name: 'Green Chilli Fries', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'chilli-fries.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 27, category: 'Flash Deals', name: 'Tender & Loaded Duo', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'tenderloaded-duo.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 28, category: 'Flash Deals', name: 'Zinger & Smash Burger Duo', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'zingersmash-duo.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 29, category: 'Flash Deals', name: 'Cheesy Zinger Burger Duo', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'zinger-duo.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 30, category: 'Flash Deals', name: 'Double Smash Burger Duo', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'smash-duo.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 31, category: 'Drinks', name: 'Avocado Milkshake', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'avocado.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 32, category: 'Drinks', name: 'Mango Milkshake', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'mango.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 33, category: 'Drinks', name: 'Strawberry Milkshake', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'strawberry.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            { id: 34, category: 'Drinks', name: 'Pepsi', price: '₹369', desc: 'Double beef patty, mushroom, truffle mayo, swiss cheese.', img: 'pepsi.avif', calories: '750', protein: '42g', fat: '35g', ingredients: ['Double Patty', 'Mushrooms', 'Truffle Mayo', 'Swiss Cheese'] },
+            
+            
+        ];
+
+        // --- LOGIC ---
+        const cats = ['All', 'Beef Burgers', 'Chicken Burgers', 'Tenders', 'Sides', 'Drinks'];
+        const listEl = document.getElementById('menuList');
+        const catEl = document.getElementById('catContainer');
+        const modal = document.getElementById('detailModal');
+
+        // Init Cats
+        cats.forEach((c, i) => {
+            const btn = document.createElement('button');
+            btn.className = `cat-btn ${i===0?'active':''}`;
+            btn.innerText = c;
+            btn.onclick = () => filter(c, btn);
+            catEl.appendChild(btn);
+        });
+
+        render('All');
+
+        function render(filterCat) {
+            listEl.innerHTML = '';
+            const items = filterCat === 'All' ? menuData : menuData.filter(i => i.category === filterCat);
+            
+            items.forEach((item, idx) => {
+                const el = document.createElement('div');
+                el.className = 'menu-item';
+                el.style.animationDelay = `${idx * 0.05}s`;
+                el.onclick = () => openModal(item.id);
+                
+                el.innerHTML = `
+                    <div class="item-content">
+                        <img src="${item.img}" class="thumb">
+                        <div class="text-group">
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-desc">${item.desc}</div>
+                        </div>
+                    </div>
+                    <div class="price-tag">${item.price}</div>
+                `;
+                listEl.appendChild(el);
+            });
+        }
+
+        function filter(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(cat);
+        }
+
+        function openModal(id) {
+            const item = menuData.find(i => i.id === id);
+            
+            document.getElementById('mImg').src = item.img;
+            document.getElementById('mTitle').innerText = item.name;
+            document.getElementById('mPrice').innerText = item.price;
+            document.getElementById('mDesc').innerText = item.desc + " Prepared fresh upon order using premium ingredients and our secret house blends.";
+            
+            // Tag
+            const tagEl = document.getElementById('mTag');
+            if(item.tag) {
+                tagEl.style.display = 'inline-block';
+                tagEl.className = 'badge-spicy';
+                tagEl.innerText = item.tag;
+            } else { tagEl.style.display = 'none'; }
+
+            // Nutri
+            document.getElementById('nCal').innerText = item.calories;
+            document.getElementById('nPro').innerText = item.protein;
+            document.getElementById('nFat').innerText = item.fat;
+
+            // Ingredients
+            const ingContainer = document.getElementById('ingList');
+            ingContainer.innerHTML = '';
+            item.ingredients.forEach(ing => {
+                ingContainer.innerHTML += `
+                    <div class="chip">
+                        <span class="chip-check">✓</span> ${ing}
+                    </div>
+                `;
+            });
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+
+    </script>
+</body>
+</html>
